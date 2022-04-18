@@ -10746,7 +10746,7 @@ namespace MSViewer
             if (BottomChart.AxesX[0].AxisMaximum == null || BottomChart.AxesX[0].AxisMinimum == null) return;
 
             var axisMax = (double)BottomChart.AxesX[0].AxisMaximum;
-            var axisMin = (BottomChart.AxesX[0].AxisMinimum is int) ? (double)(int)BottomChart.AxesX[0].AxisMinimum : (double)BottomChart.AxesX[0].AxisMinimum;
+            var axisMin = (double)BottomChart.AxesX[0].AxisMinimum;
 
             var zoomMin = axisMin + (((axisMax - zoomWidth) - axisMin) * (lastScrollLocation / 100.0));
             var zoomMax = zoomMin + zoomWidth;
