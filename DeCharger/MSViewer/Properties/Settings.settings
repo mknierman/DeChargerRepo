@@ -115,7 +115,7 @@ T	304.0460";
 RNA="A	329.0525
 C	305.0413
 G	345.0474
-U	327.0593"</Value>
+U	306.0252"</Value>
     </Setting>
     <Setting Name="MinAgilentThresholdMS1" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">500</Value>

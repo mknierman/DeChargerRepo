@@ -33,8 +33,8 @@
     <MapFileExtensions>false</MapFileExtensions>
     <InstallUrl>https://mknierman.github.io/DeChargerRepo/DeCharger/MSViewer/publish/</InstallUrl>
     <SupportUrl>https://github.com/mknierman/DeChargerRepo</SupportUrl>
-    <ProductName>DeCharger Alpha</ProductName>
-    <PublisherName>DeCharger</PublisherName>
+    <ProductName>deCharger</ProductName>
+    <PublisherName>deCharger</PublisherName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>index.htm</WebPage>
     <ApplicationRevision>563</ApplicationRevision>
@@ -78,7 +78,7 @@
     <ManifestKeyFile>DeCharger.Alpha_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <GenerateManifests>true</GenerateManifests>
+    <GenerateManifests>false</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
     <SignManifests>false</SignManifests>
@@ -138,9 +138,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-  <PropertyGroup>
-    <NoWin32Manifest>true</NoWin32Manifest>
-  </PropertyGroup>
+  <PropertyGroup />
   <ItemGroup>
     <Reference Include="DotNetZip, Version=1.13.5.0, Culture=neutral, PublicKeyToken=6583c7c814667745, processorArchitecture=MSIL">
       <HintPath>..\packages\DotNetZip.1.13.5\lib\net40\DotNetZip.dll</HintPath>

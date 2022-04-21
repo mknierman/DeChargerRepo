@@ -335,7 +335,7 @@ T	304.0460"";
 RNA=""A	329.0525
 C	305.0413
 G	345.0474
-U	327.0593""")]
+U	306.0252""")]
         public string MatchListProfile {
             get {
                 return ((string)(this["MatchListProfile"]));
