@@ -1058,11 +1058,22 @@ namespace SignalProcessing
             return ((int)Math.Round(i / 10.0)) * 10;
         }
 
+        public static void ClearAveCache()
+        {
+            if (AveragineCache.Count >1 )
+            {
+                AveragineCache =  null;
+            }
+            return;
+        }
+
+
         private ConcurrentDictionary<int, double[]> LoadAveragineCache(int maxMass = 60000, int interval = 10)
         {
             // ADW:  AveragineClassSettings
             AveragineCacheSettings settings = AveragineCacheSettings.Instance;
             var newCacheName = settings.SelectedCacheFile;
+
 
             //var appData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             //var avgCacheFilename = System.IO.Path.Combine(appData, "avgCache.dat");
@@ -1081,53 +1092,53 @@ namespace SignalProcessing
                 }
             }
 
-            if (cache == null)
-            {
-                // populate cache (takes 6-20 seconds, depending on CPU!)
-                var prlop = new ParallelOptions();
-                prlop.MaxDegreeOfParallelism = Environment.ProcessorCount;
+            //if (cache == null)
+            //{
+            //    // populate cache (takes 6-20 seconds, depending on CPU!)
+            //    var prlop = new ParallelOptions();
+            //    prlop.MaxDegreeOfParallelism = Environment.ProcessorCount;
 
-                cache = new ConcurrentDictionary<int, double[]>();
+            //    cache = new ConcurrentDictionary<int, double[]>();
 
-                Parallel.For(1, prlop.MaxDegreeOfParallelism + 1, prlop, index =>
-                {
-                    for (int i = index; i <= maxMass / interval; i += prlop.MaxDegreeOfParallelism)
-                    {
-                        var ion = GenerateAveragine(i * interval);
-                        var pattern = MassSpectrometry.IsotopeCalc.CalcIsotopePeaks(ion, 1f);
-                        var isoPattern = pattern.Select(p => (double)p.Value).ToArray();
-                        cache.TryAdd(i * interval, isoPattern);
-                    }
-                });
+            //    Parallel.For(1, prlop.MaxDegreeOfParallelism + 1, prlop, index =>
+            //    {
+            //        for (int i = index; i <= maxMass / interval; i += prlop.MaxDegreeOfParallelism)
+            //        {
+            //            var ion = GenerateAveragine(i * interval);
+            //            var pattern = MassSpectrometry.IsotopeCalc.CalcIsotopePeaks(ion, 1f);
+            //            var isoPattern = pattern.Select(p => (double)p.Value).ToArray();
+            //            cache.TryAdd(i * interval, isoPattern);
+            //        }
+            //});
 
-                //cache = new SortedList<int, double[]>();
+            //cache = new SortedList<int, double[]>();
 
-                //for (int i = 10; i <= 30000; i += 10)
-                //{
-                //    var ion = GenerateAveragine(i);
+            //for (int i = 10; i <= 30000; i += 10)
+            //{
+            //    var ion = GenerateAveragine(i);
 
-                //    var pattern = MassSpectrometry.IsotopeCalc.CalcIsotopePeaks(ion, 1f);
+            //    var pattern = MassSpectrometry.IsotopeCalc.CalcIsotopePeaks(ion, 1f);
 
-                //    var isoPattern = pattern.Select(p => (double)p.Value).ToArray();
-                //    cache.Add(i, isoPattern);
-                //}
+            //    var isoPattern = pattern.Select(p => (double)p.Value).ToArray();
+            //    cache.Add(i, isoPattern);
+            //}
 
-                //Serilaize object -- Save the cache for quick load next time.
+            //Serilaize object -- Save the cache for quick load next time.
 
-                using (fs = new FileStream(avgCacheFilename, FileMode.Create))
-                {
-                    try
-                    {
-                        var bf = new BinaryFormatter();
-                        bf.Serialize(fs, cache);
-                    }
-                    catch (SerializationException ex)
-                    {
-                        // failing to serialize is not fatal, just slows startup performance.  So don't throw anything.
-                        Debug.Print(ex.Message);
-                    }
-                }
-            }
+            //using (fs = new FileStream(avgCacheFilename, FileMode.Create))
+            //    {
+            //        try
+            //        {
+            //            var bf = new BinaryFormatter();
+            //            bf.Serialize(fs, cache);
+            //        }
+            //        catch (SerializationException ex)
+            //        {
+            //            // failing to serialize is not fatal, just slows startup performance.  So don't throw anything.
+            //            Debug.Print(ex.Message);
+            //        }
+            //    }
+            ////}
 
             return cache;
         }
@@ -1168,8 +1179,8 @@ namespace SignalProcessing
                 mass = 160;
                 
             }
-            
 
+            
             AveragineCache = AveragineCache ?? LoadAveragineCache();
 
             double[] isoPattern;

@@ -6694,7 +6694,9 @@ namespace MSViewer
                 {
                     this.label4.Content = "Decharged MS Viewer" + " - Oligo";
                 }
-                
+                //MDK clear any load cache
+                SignalProcessing.Cluster.ClearAveCache();
+
             }
         }
 
