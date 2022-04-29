@@ -7620,7 +7620,9 @@ namespace MSViewer
                 BottomChart.Series[0].Opacity = 1 - e.NewValue;
                 BottomChart.Series[5].Opacity = e.NewValue;
                 ThermoFischer.Opacity = 1 - e.NewValue;
-                ReverseSeries.Opacity = 1 - e.NewValue;
+                //MDK remove reverse spectra visibility for now
+                //ReverseSeries.Opacity = 1 - e.NewValue;
+                ReverseSeries.Opacity = 0;
             }
             catch { }
         }
@@ -11046,7 +11048,9 @@ namespace MSViewer
             try
             {
                 BottomChart.Series[0].Opacity = 1 - e.NewValue;
-                ReverseSeries.Opacity = 1 - e.NewValue;
+                //MDK remove reverse spectra visibility for now
+                //ReverseSeries.Opacity = 1 - e.NewValue;
+                ReverseSeries.Opacity = 0;
                 ThermoFischer.Opacity = e.NewValue;
                 if (e.NewValue > 0.1)
                 {
@@ -11170,14 +11174,22 @@ namespace MSViewer
                     lblReverse.Opacity = 1.0;
                     lblForward.Opacity = 1.0;
                     BottomChartPoints.Opacity = 1.0;
-                    ReverseSeries.Opacity = 1.0;
+                    //MDK remove reverse spectra visibility for now
+                    //ReverseSeries.Opacity = 1.0;
+                    ReverseSeries.Opacity = 0;
+
+                    
                     forwardorreverse = null;
                 }
                 else if (e.NewValue > 0.55)
                 {
                     lblForward.Opacity = 1.0;
                     BottomChartPoints.Opacity = 1.0;
-                    ReverseSeries.Opacity = 1.00 - 2 * (e.NewValue - 0.5);
+                    //MDK remove reverse spectra visibility for now
+                    //ReverseSeries.Opacity = 1.00 - 2 * (e.NewValue - 0.5);
+                    ReverseSeries.Opacity = 0;
+
+                   
                     lblReverse.Opacity = 1.00 - 2 * (e.NewValue - 0.5);
                     forwardorreverse = true;
                 }
@@ -11186,7 +11198,11 @@ namespace MSViewer
                     lblReverse.Opacity = 1.0;
                     lblForward.Opacity = 2 * e.NewValue;
                     BottomChartPoints.Opacity = 2 * e.NewValue;
-                    ReverseSeries.Opacity = 1.0;
+                    //MDK remove reverse spectra visibility for now
+                    //ReverseSeries.Opacity = 1.00;
+                    ReverseSeries.Opacity = 0;
+
+
                     forwardorreverse = false;
                 }
                 SetScaling();
