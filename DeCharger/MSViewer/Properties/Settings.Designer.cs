@@ -1662,7 +1662,7 @@ U	306.0252""")]
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("HCD")]
+        [global::System.Configuration.DefaultSettingValueAttribute("HCD, ETD")]
         public string ActivationOverride {
             get {
                 return ((string)(this["ActivationOverride"]));

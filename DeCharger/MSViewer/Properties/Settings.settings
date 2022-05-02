@@ -1620,7 +1620,7 @@ dHex(2)Hex(4)HexNAc(5)	dHex(2) Hex(4) HexNAc(5)	1955.723975</Value>
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="ActivationOverride" Type="System.String" Scope="User">
-      <Value Profile="(Default)">HCD</Value>
+      <Value Profile="(Default)">HCD, ETD</Value>
     </Setting>
     <Setting Name="ConnectionString" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
