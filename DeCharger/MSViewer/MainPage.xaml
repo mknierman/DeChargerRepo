@@ -602,7 +602,8 @@
 
                                                     </Grid>
                                                 </TabItem>
-                                                <TabItem Header="BPM" Name="tabBPM">
+                                                <!--/MDK  BPM tab hidden - need to get rid of it/-->
+                                                <TabItem Header="BPM" Name="tabBPM" Visibility="Hidden">
                                                     <Grid>
 
                                                         <vc:Chart ScrollingEnabled="False" Name="BPM_Chart" AnimationEnabled="false" ShadowEnabled="false" BorderThickness="0.5" Padding="3" IsEnabled="False" ToolBarEnabled="True">
@@ -804,7 +805,8 @@
                                                             <!--<Label Content="Parent Ion Detection Progress" Margin="0,0,226,7" HorizontalAlignment="Right" Width="181" Height="28" VerticalAlignment="Bottom"/>-->
                                                             <Button Margin="145,0,0,6" x:Name="btnMergeFullMSScans" Click="btnMergeFullMSScans_Click" Content="Merge Full MS Scans" HorizontalAlignment="Left" Width="128" Height="29" VerticalAlignment="Bottom" Visibility="Hidden" />
                                                             <CheckBox IsEnabled="False"  IsChecked="False" Content="Hide Scans with no Detected Precursor Mass" x:Name="chkHideScansWithNoMass" Checked="chkHideScansWithNoMass_CheckChanged" Unchecked="chkHideScansWithNoMass_CheckChanged" HorizontalAlignment="Left" Margin="116,0,0,6" VerticalAlignment="Bottom" Height="20" Width="264" RenderTransformOrigin="0.162,0.45"/>
-                                                            <CheckBox  IsChecked="True" Content="Show MS1 Scans" x:Name="chkHideScansWithMS1" Checked="chkHideScansWithNoMass_CheckChanged" Unchecked="chkHideScansWithNoMass_CheckChanged" HorizontalAlignment="Left" Margin="380,0,0,6" VerticalAlignment="Bottom" Height="20" Width="115" RenderTransformOrigin="0.162,0.45"/>
+                                                            <!-- MDK changed default for merge spectra view to not show MS1 scans  IsChecked set to false-->
+                                                            <CheckBox  IsChecked="False" Content="Show MS1 Scans" x:Name="chkHideScansWithMS1" Checked="chkHideScansWithNoMass_CheckChanged" Unchecked="chkHideScansWithNoMass_CheckChanged" HorizontalAlignment="Left" Margin="380,0,0,6" VerticalAlignment="Bottom" Height="20" Width="115" RenderTransformOrigin="0.162,0.45"/>
                                                             <Button Content="Set All Parent Masses" HorizontalAlignment="Left" Margin="501,0,0,7" x:Name="btnmrgspecSetParentMass" Click="btnmrgspecSetParentMass_Click" VerticalAlignment="Bottom" Width="127" Height="28"/>
                                                             <Button Content="Export to Excel" x:Name="btnMergeSpectraCopy" HorizontalAlignment="Left" Margin="637,0,0,7" VerticalAlignment="Bottom" Width="123" Height="28" Click="btnMergeSpectraCopy_Click"/>
                                                             <!--<DataGrid  x:Name="dtgridsequences1" Visibility="Collapsed" SelectionChanged="dtgridsequences_SelectionChanged_1" ItemsSource="{Binding}" AutoGenerateColumns="False" SelectionMode="Single" HorizontalGridLinesBrush="LightGray"  VerticalGridLinesBrush="LightGray">
