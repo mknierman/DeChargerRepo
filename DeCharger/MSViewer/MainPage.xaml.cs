@@ -653,7 +653,8 @@ namespace MSViewer
             tabXIC.Visibility = System.Windows.Visibility.Hidden;
             tabItem1.Visibility = System.Windows.Visibility.Hidden;
             tbGreenMarkers.Visibility = System.Windows.Visibility.Hidden;
-            tbMatchList.Visibility = System.Windows.Visibility.Hidden;
+            //MDK make match list visible before file load so user can set it to correct list
+            tbMatchList.Visibility = System.Windows.Visibility.Visible;
             tbMonoMassList.Visibility = System.Windows.Visibility.Hidden;
             tbMergeSpectra.Visibility = System.Windows.Visibility.Hidden;
             tbAutoScan.Visibility = System.Windows.Visibility.Hidden;
@@ -671,16 +672,19 @@ namespace MSViewer
             GrdDragDropFiles.Visibility = System.Windows.Visibility.Hidden;
             tabTIC.Visibility = System.Windows.Visibility.Visible;
             tabBPI.Visibility = System.Windows.Visibility.Visible;
-            tabBPM.Visibility = System.Windows.Visibility.Visible;
+            //MDK keep BPM hidden
+            tabBPM.Visibility = System.Windows.Visibility.Hidden;
             tabXIC.Visibility = System.Windows.Visibility.Visible;
             tabItem1.Visibility = System.Windows.Visibility.Visible;
             tbGreenMarkers.Visibility = System.Windows.Visibility.Visible;
             tbMatchList.Visibility = System.Windows.Visibility.Visible;
             tbMonoMassList.Visibility = System.Windows.Visibility.Visible;
             tbMergeSpectra.Visibility = System.Windows.Visibility.Visible;
-            tbAutoScan.Visibility = System.Windows.Visibility.Visible;
+            //MDK hide autoscan till it is fixed
+            tbAutoScan.Visibility = System.Windows.Visibility.Hidden;
             tbValidate.Visibility = System.Windows.Visibility.Visible;
-            tbConfirmedSequenceTab.Visibility = System.Windows.Visibility.Visible;
+            //hide confirmed sequenmces tab until autoscan is fixed
+            tbConfirmedSequenceTab.Visibility = System.Windows.Visibility.Hidden;
 
             btnDetectParents.IsEnabled = true;
             Thickness dtgrdsearchmargin = dtgrdSearchSequence.Margin;
@@ -697,7 +701,8 @@ namespace MSViewer
         {
             tabTIC.IsEnabled = true;
             tabBPI.IsEnabled = true;
-            tabBPM.IsEnabled = true;
+            //MDK keep BPM tab hidden
+            tabBPM.IsEnabled = false;
             tabXIC.IsEnabled = true;
             tbValidate.IsEnabled = true;
             BottomChart.IsEnabled = true;
@@ -4971,7 +4976,9 @@ namespace MSViewer
                     {
                         TIC_Chart.IsEnabled = true;
                         BPI_Chart.IsEnabled = true;
-                        BPM_Chart.IsEnabled = true;
+                        //MDK remove display of BPM chart
+                        //BPM_Chart.IsEnabled = true;
+                        BPM_Chart.IsEnabled = false;
                         XIC_Chart.IsEnabled = true;
 
                         BottomChart.IsEnabled = true;
@@ -5857,7 +5864,9 @@ namespace MSViewer
 
                     TIC_Chart.IsEnabled = true;
                     BPI_Chart.IsEnabled = true;
-                    BPM_Chart.IsEnabled = true;
+                    //MDK remove display of BPM chart
+                    //BPM_Chart.IsEnabled = true;
+                    BPM_Chart.IsEnabled = false;
                     XIC_Chart.IsEnabled = true;
 
                     BottomChart.Visibility = Visibility.Visible;
