@@ -29,7 +29,40 @@ namespace Science.Blast
     public class BlastP
     {
         static object LockObject = new object();
-         
+
+        static void CopyDirectory(string sourceDir, string destinationDir, bool recursive)
+        {
+            // Get information about the source directory
+            var dir = new DirectoryInfo(sourceDir);
+
+            // Check if the source directory exists
+            if (!dir.Exists)
+                throw new DirectoryNotFoundException($"Source directory not found: {dir.FullName}");
+
+            // Cache directories before we start copying
+            DirectoryInfo[] dirs = dir.GetDirectories();
+
+            // Create the destination directory
+            Directory.CreateDirectory(destinationDir);
+
+            // Get the files in the source directory and copy to the destination directory
+            foreach (FileInfo file in dir.GetFiles())
+            {
+                string targetFilePath = Path.Combine(destinationDir, file.Name);
+                file.CopyTo(targetFilePath);
+            }
+
+            // If recursive and copying subdirectories, recursively call this method
+            if (recursive)
+            {
+                foreach (DirectoryInfo subDir in dirs)
+                {
+                    string newDestinationDir = Path.Combine(destinationDir, subDir.Name);
+                    CopyDirectory(subDir.FullName, newDestinationDir, true);
+                }
+            }
+        }
+
         /// <summary>
         /// Create a blast database based on sequence and sequenceid
         /// </summary>
@@ -48,8 +81,21 @@ namespace Science.Blast
                     string assemblyLocation = assemblyInfo.Location;
                     //CodeBase is the location of the ClickOnce deployment files
                     Uri uriCodeBase = new Uri(assemblyInfo.CodeBase);
-                    string ClickOnceLocation = Path.GetDirectoryName(uriCodeBase.LocalPath.ToString()) + "\\Executables\\";
+                    string from = Path.GetDirectoryName(uriCodeBase.LocalPath.ToString()) + "\\Executables\\";
 
+                    // The folder for the roaming current user 
+                    string folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+
+                    // Combine the base folder with your specific folder....
+                    string ClickOnceLocation = Path.Combine(folder, "DeCharger");
+
+                    Directory.Delete(ClickOnceLocation, true);
+
+                    // CreateDirectory will check if every folder in path exists and, if not, create them.
+                    // If all folders exist then CreateDirectory will do nothing.
+                    Directory.CreateDirectory(ClickOnceLocation);
+                    ClickOnceLocation += '\\';
+                    CopyDirectory(from, ClickOnceLocation, true);
                     //File.WriteAllBytes(ClickOnceLocation + "blastp32.exe", Properties.Resources.blastp32);
 
                     if (File.Exists(ClickOnceLocation + "indexeddatabase.phr"))
