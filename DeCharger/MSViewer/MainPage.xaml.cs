@@ -81,6 +81,7 @@ using System.Xml.Serialization;
 using Ionic.Zip;
 using static Science.Proteomics.AminoAcidHelpers;
 
+
 //using System.Web.Script.Serialization;
 //using Newtonsoft.Json;
 
@@ -483,9 +484,7 @@ namespace MSViewer
                 this.DragLeave += (s, e) => VisualStateManager.GoToState(this, "Normal", true);
                 this.Drop += new DragEventHandler(RootElement_Drop);
 
-                var assembly = Assembly.GetExecutingAssembly();
-                string version = assembly.FullName.Split(',')[1];
-                string fullversion = version.Split('=')[1];
+
 
                 //MDK update main title to reflect isotope set loaded
                 AveragineCacheSettings settings = AveragineCacheSettings.Instance;
@@ -500,7 +499,28 @@ namespace MSViewer
                     label4.Content = "Decharged MS Viewer" + " - Oligo";
                     }
 
-                lblVersionAuthors.Content = "Version " + fullversion;
+                // old version information
+                var assembly = Assembly.GetExecutingAssembly();
+                string version = assembly.FullName.Split(',')[1];
+                string fullversion = version.Split('=')[1];
+
+                //MDK get publish version  in  progress
+
+                //string execPath = AppDomain.CurrentDomain.BaseDirectory;
+
+                //var pubVer = string.Format("Product Name: {4}, Version: {0}.{1}.{2}.{3}", System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion.Major, System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion.Minor, System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion.Build, System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion.Revision, Assembly.GetEntryAssembly().GetName().Name);
+                string pubVer; 
+                try
+                {
+                    pubVer = string.Format("Product Name: {4}, Version: {0}.{1}.{2}.{3}", System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion.Major, System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion.Minor, System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion.Build, System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion.Revision, Assembly.GetEntryAssembly().GetName().Name);
+                }
+                catch (Exception ex)
+                {
+                    pubVer = fullversion;
+                }
+
+
+                lblVersionAuthors.Content = "Version: " + pubVer;
                 App.AssemblyLocation = FindCurrentAssemblyPath.GetAssemblyPath();
                 Items = new ObservableCollection<QuantitationItem>();
                 QuantitationListView.ItemsSource = Items;
@@ -633,7 +653,8 @@ namespace MSViewer
             tabXIC.Visibility = System.Windows.Visibility.Hidden;
             tabItem1.Visibility = System.Windows.Visibility.Hidden;
             tbGreenMarkers.Visibility = System.Windows.Visibility.Hidden;
-            tbMatchList.Visibility = System.Windows.Visibility.Hidden;
+            //MDK make match list visible before file load so user can set it to correct list
+            tbMatchList.Visibility = System.Windows.Visibility.Visible;
             tbMonoMassList.Visibility = System.Windows.Visibility.Hidden;
             tbMergeSpectra.Visibility = System.Windows.Visibility.Hidden;
             tbAutoScan.Visibility = System.Windows.Visibility.Hidden;
@@ -651,16 +672,19 @@ namespace MSViewer
             GrdDragDropFiles.Visibility = System.Windows.Visibility.Hidden;
             tabTIC.Visibility = System.Windows.Visibility.Visible;
             tabBPI.Visibility = System.Windows.Visibility.Visible;
-            tabBPM.Visibility = System.Windows.Visibility.Visible;
+            //MDK keep BPM hidden
+            tabBPM.Visibility = System.Windows.Visibility.Hidden;
             tabXIC.Visibility = System.Windows.Visibility.Visible;
             tabItem1.Visibility = System.Windows.Visibility.Visible;
             tbGreenMarkers.Visibility = System.Windows.Visibility.Visible;
             tbMatchList.Visibility = System.Windows.Visibility.Visible;
             tbMonoMassList.Visibility = System.Windows.Visibility.Visible;
             tbMergeSpectra.Visibility = System.Windows.Visibility.Visible;
-            tbAutoScan.Visibility = System.Windows.Visibility.Visible;
+            //MDK hide autoscan till it is fixed
+            tbAutoScan.Visibility = System.Windows.Visibility.Hidden;
             tbValidate.Visibility = System.Windows.Visibility.Visible;
-            tbConfirmedSequenceTab.Visibility = System.Windows.Visibility.Visible;
+            //hide confirmed sequenmces tab until autoscan is fixed
+            tbConfirmedSequenceTab.Visibility = System.Windows.Visibility.Hidden;
 
             btnDetectParents.IsEnabled = true;
             Thickness dtgrdsearchmargin = dtgrdSearchSequence.Margin;
@@ -677,7 +701,8 @@ namespace MSViewer
         {
             tabTIC.IsEnabled = true;
             tabBPI.IsEnabled = true;
-            tabBPM.IsEnabled = true;
+            //MDK keep BPM tab hidden
+            tabBPM.IsEnabled = false;
             tabXIC.IsEnabled = true;
             tbValidate.IsEnabled = true;
             BottomChart.IsEnabled = true;
@@ -4951,7 +4976,9 @@ namespace MSViewer
                     {
                         TIC_Chart.IsEnabled = true;
                         BPI_Chart.IsEnabled = true;
-                        BPM_Chart.IsEnabled = true;
+                        //MDK remove display of BPM chart
+                        //BPM_Chart.IsEnabled = true;
+                        BPM_Chart.IsEnabled = false;
                         XIC_Chart.IsEnabled = true;
 
                         BottomChart.IsEnabled = true;
@@ -5837,7 +5864,9 @@ namespace MSViewer
 
                     TIC_Chart.IsEnabled = true;
                     BPI_Chart.IsEnabled = true;
-                    BPM_Chart.IsEnabled = true;
+                    //MDK remove display of BPM chart
+                    //BPM_Chart.IsEnabled = true;
+                    BPM_Chart.IsEnabled = false;
                     XIC_Chart.IsEnabled = true;
 
                     BottomChart.Visibility = Visibility.Visible;
@@ -6674,7 +6703,9 @@ namespace MSViewer
                 {
                     this.label4.Content = "Decharged MS Viewer" + " - Oligo";
                 }
-                
+                //MDK clear any load cache
+                SignalProcessing.Cluster.ClearAveCache();
+
             }
         }
 
@@ -7598,7 +7629,9 @@ namespace MSViewer
                 BottomChart.Series[0].Opacity = 1 - e.NewValue;
                 BottomChart.Series[5].Opacity = e.NewValue;
                 ThermoFischer.Opacity = 1 - e.NewValue;
-                ReverseSeries.Opacity = 1 - e.NewValue;
+                //MDK remove reverse spectra visibility for now
+                //ReverseSeries.Opacity = 1 - e.NewValue;
+                ReverseSeries.Opacity = 0;
             }
             catch { }
         }
@@ -10726,7 +10759,7 @@ namespace MSViewer
             if (BottomChart.AxesX[0].AxisMaximum == null || BottomChart.AxesX[0].AxisMinimum == null) return;
 
             var axisMax = (double)BottomChart.AxesX[0].AxisMaximum;
-            var axisMin = (double)BottomChart.AxesX[0].AxisMinimum;
+            var axisMin = (BottomChart.AxesX[0].AxisMinimum is int) ? (double)(int)BottomChart.AxesX[0].AxisMinimum : (double)BottomChart.AxesX[0].AxisMinimum;
 
             var zoomMin = axisMin + (((axisMax - zoomWidth) - axisMin) * (lastScrollLocation / 100.0));
             var zoomMax = zoomMin + zoomWidth;
@@ -11024,7 +11057,9 @@ namespace MSViewer
             try
             {
                 BottomChart.Series[0].Opacity = 1 - e.NewValue;
-                ReverseSeries.Opacity = 1 - e.NewValue;
+                //MDK remove reverse spectra visibility for now
+                //ReverseSeries.Opacity = 1 - e.NewValue;
+                ReverseSeries.Opacity = 0;
                 ThermoFischer.Opacity = e.NewValue;
                 if (e.NewValue > 0.1)
                 {
@@ -11148,14 +11183,22 @@ namespace MSViewer
                     lblReverse.Opacity = 1.0;
                     lblForward.Opacity = 1.0;
                     BottomChartPoints.Opacity = 1.0;
-                    ReverseSeries.Opacity = 1.0;
+                    //MDK remove reverse spectra visibility for now
+                    //ReverseSeries.Opacity = 1.0;
+                    ReverseSeries.Opacity = 0;
+
+                    
                     forwardorreverse = null;
                 }
                 else if (e.NewValue > 0.55)
                 {
                     lblForward.Opacity = 1.0;
                     BottomChartPoints.Opacity = 1.0;
-                    ReverseSeries.Opacity = 1.00 - 2 * (e.NewValue - 0.5);
+                    //MDK remove reverse spectra visibility for now
+                    //ReverseSeries.Opacity = 1.00 - 2 * (e.NewValue - 0.5);
+                    ReverseSeries.Opacity = 0;
+
+                   
                     lblReverse.Opacity = 1.00 - 2 * (e.NewValue - 0.5);
                     forwardorreverse = true;
                 }
@@ -11164,7 +11207,11 @@ namespace MSViewer
                     lblReverse.Opacity = 1.0;
                     lblForward.Opacity = 2 * e.NewValue;
                     BottomChartPoints.Opacity = 2 * e.NewValue;
-                    ReverseSeries.Opacity = 1.0;
+                    //MDK remove reverse spectra visibility for now
+                    //ReverseSeries.Opacity = 1.00;
+                    ReverseSeries.Opacity = 0;
+
+
                     forwardorreverse = false;
                 }
                 SetScaling();

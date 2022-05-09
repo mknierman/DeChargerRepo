@@ -248,7 +248,7 @@ namespace MSViewer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool ShowHitsWithNoProteinID {
             get {
                 return ((bool)(this["ShowHitsWithNoProteinID"]));
@@ -308,7 +308,34 @@ namespace MSViewer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"default=""A	71.03711
+R	156.10111
+N	114.04293
+D	115.02694
+C	103.00919
+E	129.04259
+Q	128.05858
+G	57.02146
+H	137.05891
+L	113.08406
+K	128.09496
+M	131.04049
+Mo	147.0354		// Methionine Sulfoxide
+F	147.06841
+P	97.05276
+S	87.03203
+T	101.04768
+W	186.07931
+Y	163.06333
+V	99.06841"";
+DNA=""A 313.0576
+C	289.0464
+G	329.0525
+T	304.0460"";
+RNA=""A	329.0525
+C	305.0413
+G	345.0474
+U	306.0252""")]
         public string MatchListProfile {
             get {
                 return ((string)(this["MatchListProfile"]));
@@ -514,9 +541,10 @@ namespace MSViewer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Oxidation\t15.9949\to\r\nDeamidation\t0.9840\tda\r\nAmmonia-loss\t-17.0265\tam\r\nWater-Loss\t" +
-            "-18.0100\twater\r\nAcetylation\t42.0106\tac\r\nEthanolation\t44.0262\teth\r\nCarboxyethyl\t7" +
-            "2.0211\tcrbx\r\nGlu->pyro-Glu\t-18.0105\te->pg\r\nGln->pyro-Glu\t-17.0265\tq->pg\r\n")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Oxidation\t              15.9949\to\r\nDeamidation\t0.9840\tda\r\nAmmonia-loss\t-17.0265\ta" +
+            "m\r\nWater-Loss\t-18.0100\twater\r\nAcetylation\t42.0106\tac\r\nEthanolation\t44.0262\teth\r\n" +
+            "Carboxyethyl\t72.0211\tcrbx\r\nGlu->pyro-Glu\t-18.0105\te->pg\r\nGln->pyro-Glu\t-17.0265\t" +
+            "q->pg\r\n")]
         public string ValidationModificationsList {
             get {
                 return ((string)(this["ValidationModificationsList"]));
@@ -1502,7 +1530,7 @@ namespace MSViewer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool UseHybridIntensities {
             get {
                 return ((bool)(this["UseHybridIntensities"]));
@@ -1634,7 +1662,7 @@ namespace MSViewer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("HCD")]
+        [global::System.Configuration.DefaultSettingValueAttribute("HCD, ETD")]
         public string ActivationOverride {
             get {
                 return ((string)(this["ActivationOverride"]));
