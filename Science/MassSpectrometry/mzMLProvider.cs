@@ -35,7 +35,19 @@ using System.Xml;
 using System.Threading.Tasks;
 using System.Globalization;
 using Ionic.Zlib;
-//using Ionic.Zlib;
+//MDK try PSI mzML reader
+//using PSI_Interface.MSData;
+
+
+//public class PSI_mzMLProvider : BaseMSProvider, IMSProvider
+//    public PointSet TIC
+//{
+//    get
+//    {
+
+//    }
+//}
+
 
 public class mzMLProvider : BaseMSProvider, IMSProvider
 {

@@ -38,7 +38,7 @@ public class ChargeDetector
     //public static double PpmTolerance = 1;  // 1 ppm is was a well tuned OrbiTrap should achieve
 
     //DEBUG:  if set to true clusters that are rejected will have thier failure evidence printed to output
-    private const bool verbose = true;
+    private const bool verbose = false;
 
     public ChargeDetector(SortedList<double, float> points, float minIntensity = 0)
     {
@@ -364,15 +364,20 @@ public class ChargeDetector
             if (runLength <= 1) continue;  // abort if we can't find a decent length run of peaks
 
             int score = 0;
+            //MDK  changes 
+            // ion run too small
+            //if (charge < 3 && runLength < 2) continue;
+            //if (charge > 5 && runLength < 5) continue;
+            //if (charge > 6 && runLength < 6) continue;
+            //if (charge > 12 && runLength < 9) continue;
+            //MDK
+            if (charge > 5 && runLength < 4) continue;
 
-            if (charge < 3 && runLength < 2) continue;
-            if (charge < 3 && runLength > 14) continue;
-            //if (charge < 5 && runLength < 3) continue;
+            // ion run to long
+            //if (charge < 3 && runLength > 14) continue;
             if (charge < 5 && runLength > 14) continue;
-            if (charge > 5 && runLength < 5) continue;
-            if (charge > 6 && runLength < 6) continue;
-            //if (charge > 7 && runLength < 7) continue;  // too strict
-            if (charge > 12 && runLength < 9) continue;
+
+
 
 
             score += 10 * runLength;
@@ -556,7 +561,8 @@ public class ChargeDetector
 
             score += currentCluster.Peaks.Where(p => p.IsCorePeak).Count() * 30;
 
-            if (score < 300 || (currentCluster.Peaks[0].Mass < 3000 && !currentCluster.Peaks.Any(p => p.IsMonoisotopic && p.IsCorePeak)))
+            //MDK test score limit to 1000 for Agilent TOFs, it was set to 300 but saw a lot of low noise
+            if (score < 1000 || (currentCluster.Peaks[0].Mass < 3000 && !currentCluster.Peaks.Any(p => p.IsMonoisotopic && p.IsCorePeak)))
             {
                 if (verbose && score > 300)
                     Debug.Print("Rejected because all charge 3 and under ions must have a monoisotopic peak and it must be a core peak");
