@@ -328,7 +328,7 @@ T	101.04768
 W	186.07931
 Y	163.06333
 V	99.06841"";
-DNA=""A 313.0576
+DNA=""A 	313.0576
 C	289.0464
 G	329.0525
 T	304.0460"";
@@ -1638,7 +1638,7 @@ U	306.0252""")]
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool NativeAveragingEnabled {
             get {
                 return ((bool)(this["NativeAveragingEnabled"]));

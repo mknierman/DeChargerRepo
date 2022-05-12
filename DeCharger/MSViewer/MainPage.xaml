@@ -262,7 +262,7 @@
                                                             </Style>
                                                         </wpfx:BusyIndicator.ProgressBarStyle>-->
                                             <TabControl Margin="5,67,5,7" Name="tabControl1" >
-                                                <TabItem x:Name="tabProteinSearch" Header="Proteins" HorizontalAlignment="Left" Width="59">
+                                                <TabItem x:Name="tabProteinSearch" Header="Proteins or Oligos" HorizontalAlignment="Left" Width="120">
                                                     <wpfx:BusyIndicator x:Name="bsySearchDatabase"  >
                                                         <wpfx:BusyIndicator.BusyContentTemplate>
                                                             <DataTemplate>
@@ -540,16 +540,14 @@
                                                                     Equals
                                                                 </ComboBoxItem>
                                                             </ComboBox>
-
+                                                            
                                                             <Grid Margin="0,130,0,0" Height="262" VerticalAlignment="Top" HorizontalAlignment="Center"  Width="460" x:Name="GrdDragDropFiles" ToolTip="Drag multiple FASTA and/or one RAW file or one .D folder" Grid.ColumnSpan="2">
                                                                 <Label x:Name="lbldragdropfileshere" Content="Drag/Drop Files here" Margin="105,59,0,0" VerticalAlignment="Top" FontSize="35" Height="60" Foreground="Gray" HorizontalAlignment="Left" Width="340" />
                                                                 <Label x:Name="lbldragdropmltplfls" Content="(You can drop multiple files)" Foreground="LightGray" HorizontalAlignment="Left" Margin="189,101,0,0" VerticalAlignment="Top" Width="184"/>
                                                                 <Label x:Name="lbldragdropborder" BorderBrush="LightGray" BorderThickness="2" HorizontalAlignment="Left" Margin="132,123,0,-19" VerticalAlignment="Top" Height="123" Width="325">
                                                                     <StackPanel Width="313">
-                                                                        <Label Content="RAW - Thermo data file" x:Name="lbldragdropfiletypesRAW" FontSize="18" Height="30" Margin="-3,-4,3,0"/>
                                                                         <Label Content="D - Agilent data folder" FontSize="18" Height="34" x:Name="lbldragdropfiletypesD" Margin="-3,-4,3,0" />
-                                                                        <Label Content="mzML - XML formatted data file" FontSize="18" Height="30" Margin="-3,-8,3,0" />
-                                                                        <Label Content="FSA or FASTA - Protein sequence files" x:Name="lbldragdropfiletypesFSA" Height="34" FontSize="18" Margin="-3,-4,3,0" />
+                                                                        <Label Content="FSA or FASTA - Protein or Oligo sequence files" x:Name="lbldragdropfiletypesFSA" Height="34" FontSize="18" Margin="-3,-4,3,0" />
                                                                     </StackPanel>
                                                                 </Label>
                                                                 <Image HorizontalAlignment="Left" Opacity="0.5" Height="100" Margin="-2,79,0,0" Source="/Icons/File.png" VerticalAlignment="Top" Width="100"/>

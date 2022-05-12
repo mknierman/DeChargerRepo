@@ -89,6 +89,7 @@ namespace Science.Blast
                     // Combine the base folder with your specific folder....
                     string ClickOnceLocation = Path.Combine(folder, "DeCharger");
 
+                    
                     Directory.Delete(ClickOnceLocation, true);
 
                     // CreateDirectory will check if every folder in path exists and, if not, create them.

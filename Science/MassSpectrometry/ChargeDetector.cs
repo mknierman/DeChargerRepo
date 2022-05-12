@@ -33,68 +33,23 @@ public class ChargeDetector
 
     SortedList<float, double> intensityList = new SortedList<float, double>();
 
-    //private const double Charge16 = 1 / 16d;
-    //private const double Tolerance = 0.0035d;  // tight tolerance used for initial detection
-    //public static double PpmTolerance = 1;  // 1 ppm is was a well tuned OrbiTrap should achieve
-
     //DEBUG:  if set to true clusters that are rejected will have thier failure evidence printed to output
     private const bool verbose = true;
 
     public ChargeDetector(SortedList<double, float> points, float minIntensity = 0)
     {
-        //button1.IsEnabled = false;
-
         mzList = points;
         intensityList.Clear();
 
         foreach (var aPoint in mzList)
         {
-            //var parts = aLine.Split('\t');
-            //float intensity = (float)points[1, i];
-            //double mz = points[0, i];
-
-            //mzList.Add(mz, intensity);
-
             if (!intensityList.ContainsKey(aPoint.Value) && aPoint.Value > minIntensity) intensityList.Add(aPoint.Value, aPoint.Key);
-
-            //if (intensityList.ContainsKey(intensity))
-            //{
-            //    var i = new List<double>(intensityList[intensity]);
-            //    i.Add(mz);
-            //    intensityList[intensity] = i.ToArray();
-            //}
-            //else
-            //{
-            //    intensityList.Add(intensity, new double[] { mz });
-            //}
         }
-
-        //button1.IsEnabled = true;
     }
 
 
-    //private void button2_Click()
-    //{
-
-    //    var start = DateTime.Now;
-
-    //    DetectChargeStates(4, 40);
-
-    //    //ParallelDetectChargeStates(4, 40);
-
-    //    Debug.Print("Elapsed ms: " + DateTime.Now.Subtract(start).TotalMilliseconds);
-    //}
-
-    //public List<Cluster> DetectChargeStates(int MinCharge = 4, int MaxCharge = 4)
-
     public List<Cluster> DetectChargeStates(double MassTolerance, int MinCharge = 1, int MaxCharge = 40, double massRangeMin = 0, double massRangeMax = double.MaxValue, bool applyNoiseFilter = true)
     {
-        // m/z, charge state, cluster ID
-        //var clusters = new MultiKeyDictionary<double, int, int>();
-
-        // For Testing ONLY!!!
-        //MinCharge = 3;
-        //MaxCharge = 6;
 
         // Can be Parallel!!!
         var finalResult = new List<Cluster>(); // Dictionary<int, System.Collections.Generic.SortedList<double, float>>();
@@ -107,14 +62,9 @@ public class ChargeDetector
             //TODO: filter out peaks that don't have others from the isotope distribution
             //TODO: filter out distributions that have gaps (or missing peaks) -- open up tolerance a bit to be sure though...
 
-            //double zSpace = 1.007947d / (double)chargeState;
             double zSpace = SignalProcessor.ProtonMass / (double)chargeState;  // changed to accomodate mass defect
 
-            // Remove peaks with insufficient supporting peak data (i.e. at least 3 peaks where there should be 6)
-            //result.RemoveWhere(t => result.Where(x => ((x < (t + (3.2 * zSpace))) && (x > (t - (3.2 * zSpace))))).Count() < 4);
-
             //TODO: take the groupings of peaks and fill in the ones missing from the distribution.  
-            //result
 
             var result2 = FindIsotopeGroups(result, chargeState, MassTolerance, applyNoiseFilter);
 
@@ -137,8 +87,6 @@ public class ChargeDetector
                         if (aCluster.Peaks.Where(p => p.IsCorePeak).Any(x => x.MZ == aPeak.MZ))
                         {
                             skipPoints++;
-                            //skip = true;
-                            //break;
                         }
                     }
 
@@ -151,22 +99,7 @@ public class ChargeDetector
 
                 if (!skip) finalResult.Add(aCluster);
 
-                //if (!finalResult.ContainsKey(aCluster.Z)) finalResult.Add(aCluster.Z, new SortedList<double, float>());
-
-                //foreach (var aPeak in aCluster.Peaks)
-                //    if (!finalResult[chargeState].ContainsKey(aPeak.MZ)) finalResult[chargeState].Add(aPeak.MZ, aPeak.Intensity);
             }
-
-            // Debug.Print("Peaks for Charge " + chargeState.ToString() + ": " + finalResult[chargeState].Count);
-
-            //                finalResult.Add(chargeState, result);
-
-            //foreach (var aPeak in result)
-            //    Debug.WriteLine("Found a peak (Z=" + chargeState + "): " + aPeak);
-
-            //Debug.Print("Charge States Assigned = " + result2.Count);
-
-
 
         }
 
@@ -220,44 +153,19 @@ public class ChargeDetector
     /// <returns></returns>
     private List<Cluster> FindIsotopeGroups(List<double> input, int charge, double massTolerance, bool applyNoiseFilter = true)
     {
-        
-
+        // declare vars
         var clusters = new List<Cluster>();
-
-        //double LooseTolerance = Math.Min(charge > 3 ? 0.0050 : 0.011, (1.0078d / (double)charge) - (1.0078d / ((double)charge+1d)));
-        //double LooseTolerance = Math.Min(charge > 3 ? 0.0050 : 0.011, (SignalProcessor.ProtonMass / (double)charge) - (SignalProcessor.ProtonMass / ((double)charge + 1d)));
-
         double LooseTolerance = 0.01;
-
-
-        //LooseTolerance = 0.0032;
-
         double dCharge = (double)charge;
-
-        //var zSpace = 1.007947d / (double)charge;
         var zSpace = SignalProcessor.ProtonMass / dCharge;  // changed to accomodate mass defect
-
-        //            var result = new Science.Chemistry.SortedSet<double>();
-
-        // ***** Take all the peaks within 5 zSpaces and see if the gap % zspace < Tolerance
-
-
-        //int peakSearchCount = Math.Max(6, (int)(charge / 1.4));
-
-        // WARNING!  The input to this is a list of m/z's but it MUST have previously been sorted by decreasing intensity to work best going forward...
-
 
         foreach (var aPeak in input)
         {
             //TODO: use cross-correlation here to find peaks of the distribution?
-            //LabelCharge(aPeak, zSpace, Tolerance);
 
-            //if (clusters.Any(c => c.Peaks.Where(i => i.IsCorePeak).Any(p=>p.MZ == aPeak)))
             if (clusters.Any(c => c.Peaks.Any(p => p.MZ == aPeak && c.Peaks.Any(x => x.IsMonoisotopic) && p.Index >= c.Peaks.Where(x => x.IsMonoisotopic).First().Index)))
                 continue;
 
-            // This is a looser tolerance because of the Multiplier 
-            //LooseTolerance = ((1.7 * MSViewer.Properties.Settings.Default.MassTolerancePPM) / 1e6d) * (aPeak);
             LooseTolerance = ((0.06 * massTolerance) / 1e6d) * (aPeak * dCharge);
 
             LooseTolerance = Math.Max(LooseTolerance, zSpace / 5d);
@@ -266,15 +174,10 @@ public class ChargeDetector
             
             var distribution = new System.Collections.Generic.Dictionary<int, ClusterPeak>();
 
-            //var distribution = from peak in mzList
-            //                   where (peak.Key > (aPeak - (zSpace * 2))) && (peak.Key < (aPeak + (zSpace * 25))) && (Math.Abs(Math.IEEERemainder(peak.Key - aPeak, zSpace)) < LooseTolerance)
-            //                   select peak;
-
             double peakMass = aPeak * dCharge * SignalProcessor.ProtonMass;
 
             // Derived from polynomial fit to a in-silico computed plot of averagine for first/last peak from apex of averagine
             int peakSearchStart = (int)(-0.000000004 * (peakMass * peakMass) + 0.0007 * peakMass - 0.8035);
-            //peakSearchStart = Math.Max(2, (peakSearchStart + 1)) * -1;  // new and bad? 
             peakSearchStart = Math.Max(4, (peakSearchStart + 2)) * -1;  // old and good
             int peakSearchEnd = (int)(-0.00000002 * (peakMass * peakMass) + 0.001 * peakMass + 3.6539);
             peakSearchEnd = Math.Max(4, peakSearchEnd + 2);  //  I add 2 in case we miss the apex by up to 2 peaks.  
@@ -299,7 +202,6 @@ public class ChargeDetector
                 if (newPeak.Delta > LooseTolerance)
                 {
                     // Could not find a peak with a close enough match, so we are throwing out the match and using a 0-intensity dummy peak
-                    //if (newPeak.Delta > (zSpace / 3))
                     if (newPeak.Delta > (LooseTolerance))
                         newPeak = new ClusterPeak() { Parent = (currentCluster), MZ = mzTarget, Intensity = 0, Index = i, Delta = float.MaxValue };
 
@@ -311,18 +213,9 @@ public class ChargeDetector
                 }
                 else if (runLength < (i - currentRunStart) + 1)
                 {
-                    // This is a fix for Mike's Charge 16 and Charge 4 overlap
-
-                    // Adjacent Peaks within the run must be of similar intensities (note: degree of similarity should be based on charge state)
-                    //                        if (i > 0 && (Math.Min(newPeak.Intensity, distribution[i - 1].Intensity) / Math.Max(newPeak.Intensity, distribution[i - 1].Intensity) < 0.3) && aPeak > newPeak.MZ) currentRunStart = i;
-
-                    //var minIntensityPercent = 0.06 + (newPeak.Mass / 3000d);  //TODO: replace this with an estimation of theoretical values
-
-                    var minIntensityPercent = 0.1509 * Math.Log(newPeak.Mass) - 0.6479;
+                     var minIntensityPercent = 0.1509 * Math.Log(newPeak.Mass) - 0.6479;
 
                     minIntensityPercent = minIntensityPercent * 0.5;  //  Add some tolerance factor (it has to be within 30% of expected value for neighboring intensity delta)?  This should be forgiving because ion suppression may cause real variability in neighboring peaks?
-
-                    //if (i > 0 && aPeak != mzTarget && (Math.Min(newPeak.Intensity, distribution[i - 1].Intensity) / Math.Max(newPeak.Intensity, distribution[i - 1].Intensity) < 0.3))
 
                     if (i > 0 && aPeak != mzTarget && (Math.Min(newPeak.Intensity, distribution[i - 1].Intensity) / Math.Max(newPeak.Intensity, distribution[i - 1].Intensity) < minIntensityPercent))
                     {
@@ -344,36 +237,20 @@ public class ChargeDetector
                  distribution.Add(i, newPeak);
             }
 
-
-
-            // continuity score => how many peaks are missing from distribution
-
-            //var firstPeak = distribution.Where(x => x.Key == distribution.Min(p => p.Key)).First().Key;
-            //var lastPeak = distribution.Where(x => x.Key == distribution.Max(p => p.Key)).First().Key;
-
-            //Debug.WriteLine("Distribution tolerance (" + firstPeak.ToString("0.00000") + " - " + lastPeak.ToString("0.00000") + "): " +  Math.IEEERemainder(lastPeak - firstPeak, zSpace));
-
-            //var peakCount = distribution.Count();
-
-
-
-            // Find largest run of peaks
-            //                foreach (var peakInDist in distribution)
-            //                    peakInDist.IsCorePeak = peakInDist.Index >= firstRunPeak && peakInDist.Index <= lastRunPeak;
-
+            // Ion spacing scoring
+            int score = 0;
             if (runLength <= 1) continue;  // abort if we can't find a decent length run of peaks
 
-            int score = 0;
-
+            //MDK  changes 
+            // ion run too small
             if (charge < 3 && runLength < 2) continue;
-            if (charge < 3 && runLength > 14) continue;
-            //if (charge < 5 && runLength < 3) continue;
-            if (charge < 5 && runLength > 14) continue;
-            if (charge > 5 && runLength < 5) continue;
+            if (charge > 5 && runLength < 4) continue;
             if (charge > 6 && runLength < 6) continue;
-            //if (charge > 7 && runLength < 7) continue;  // too strict
             if (charge > 12 && runLength < 9) continue;
 
+            // ion run to long
+            if (charge < 3 && runLength > 5) continue;
+            if (charge < 5 && runLength > 14) continue;
 
             score += 10 * runLength;
 
@@ -392,16 +269,6 @@ public class ChargeDetector
                 // This should be very rare.  There is no second most intense peak...
                 continue;
             }
-
-            //var peaks = new SortedList<double, float>();
-
-            //SortedList<double, float> window = new SortedList<double, float>();
-
-            //int startIndex = mzList.IndexOfKey(mzList.FindClosest(distribution.First().MZ));
-            //int endIndex = mzList.IndexOfKey(mzList.FindClosest(distribution.Last().MZ));
-
-            //for (int i = startIndex; i <= endIndex; i++)
-            //    window.Add(mzList.Keys[i], mzList[mzList.Keys[i]]);
 
             currentCluster.Peaks = new ListOfClusterPeak(distribution.Values);
             currentCluster.SetMonoAndCorePeaks();
@@ -432,14 +299,7 @@ public class ChargeDetector
                 }
             }
 
-            //foreach (var currentPeak in currentCluster.Peaks.Where(p => p.IsCorePeak))
-            //{
-            //    //currentPeak.Index
-            //}
-
-
             ClusterPeak lastPeak = null;
-
 
             // Start with the coreStartIndex, then calculate the stats for just the true core!  
 
@@ -464,50 +324,7 @@ public class ChargeDetector
                 lastPeak = currentPeak;
             }
 
-            /// MDK  DEBUG
-            if (currentCluster.MonoMass > 896.2842 & currentCluster.MonoMass < 896.2843)
-            { 
-                var x = 1;
-            }
-            if (verbose) Debug.Print("Current cluster Mono,mono mz:  " + currentCluster.MonoMass.ToString() + ", "+ currentCluster.MonoMZ.ToString());
-            
-
-
-            //for (int i = firstRunPeak; i < lastRunPeak; i++)
-            //{
-
-                //    //distribution[i].IsCorePeak = true;
-                //    //distribution[i+1].IsCorePeak = true;  
-
-                //    // Computer factors for Score calculation
-                //    AverageDeviation += distribution[i + 1].MZ - distribution[i].MZ;
-                //    VarianceInRun += ((distribution[i + 1].MZ - distribution[i].MZ) - (SignalProcessor.ProtonMass / (double)charge)) * ((distribution[i + 1].MZ - distribution[i].MZ) - (SignalProcessor.ProtonMass / (double)charge));
-
-                //    //peaks.Add(distribution[i], mzList[distribution[i]]);
-
-                //    // Estimate local noise level by intensity of peaks between isotope peaks...
-                //    // We keep a tally of each peak gap - noisy or clean.  Then weight against intensity of the core peaks
-
-                //    //double noiseContribution = 0;
-
-
-                //    // Local Noise does not seem to be adding value and the calls to FindClosestIndex are VERY costly
-
-                //    for (int j = mzList.FindClosestIndex(distribution[i].MZ) + 1; j < mzList.FindClosestIndex(distribution[i + 1].MZ); j++)
-                //    {
-                //        localNoise += (mzList.Values[j] > ((Math.Min(distribution[i].Intensity, distribution[i + 1].Intensity)) * 0.65)) ? Math.Min(1, mzList.Values[j] / secondLargestIntensity) : 0;
-                //    }
-
-                //    //localNoise += noiseContribution;
-
-                //    //var moreNoise =  mzList.Where(m => m.Key > distribution[i].MZ && m.Key < distribution[i + 1].MZ && m.Value > ((Math.Min(distribution[i].Intensity, distribution[i + 1].Intensity)) * 0.65)).ToArray();
-
-                //    //localNoise += moreNoise.Length;
-
-                //    //localNoise += mzList.Where(m => m.Key > distribution[i].MZ && m.Key < distribution[i + 1].MZ && m.Value > ((Math.Min(distribution[i].Intensity, distribution[i + 1].Intensity)) * 0.65)).Count();                
-                //}
-
-                if (verbose) Debug.Print("Evaluating Distribution of length = " + runLength.ToString() + ", charge = " + charge.ToString());
+            if (verbose) Debug.Print("Evaluating Distribution of length = " + runLength.ToString() + ", charge = " + charge.ToString());
 
             
             if (applyNoiseFilter && (localNoise / ((coreEndIndex - coreStartIndex) * zSpace)) > 4)
@@ -556,6 +373,10 @@ public class ChargeDetector
 
             score += currentCluster.Peaks.Where(p => p.IsCorePeak).Count() * 30;
 
+
+            //MDK increase thershold to 1000 for score on Agilent Data
+            if (score < 1000) continue;
+
             if (score < 300 || (currentCluster.Peaks[0].Mass < 3000 && !currentCluster.Peaks.Any(p => p.IsMonoisotopic && p.IsCorePeak)))
             {
                 if (verbose && score > 300)
@@ -568,151 +389,15 @@ public class ChargeDetector
 
             // Estimate local noise level by intensity of peaks between isotope peaks...
 
-
             if (verbose) Debug.Print("Score = " + score.ToString() + "; A good one at charge " + charge.ToString() + "?  " + runLength.ToString() + " continuous peaks at m/z => " + distribution[firstRunPeak].MZ.ToString("0.0000") + " to " + distribution[lastRunPeak].MZ.ToString("0.0000"));
 
-          
-            //var PeakRemoveCount = currentCluster.Peaks.Where(p => p.Mass < (currentCluster.MonoMass - 1.5)).Count();
-            //currentCluster.Peaks.RemoveRange(0, PeakRemoveCount); 
-
             clusters.Add(currentCluster);
-
-            //var maxPeak = currentCluster.Peaks.Where(p => p.IsCorePeak).OrderByDescending(q => q.MZ).First();
-            //var minPeak = currentCluster.Peaks.Where(p => p.IsCorePeak).OrderBy(q => q.MZ).First();
-
-            //if (score > 400)
-            //{
-            //    //Debug.Print("Score = " + score.ToString() + "; A good one at charge " + charge.ToString() + "?  " + runLength.ToString() + " continuous peaks at m/z => " + distribution[firstRunPeak].MZ.ToString("0.0000") + " to " + distribution[lastRunPeak].MZ.ToString("0.0000"));                        
-            //    Debug.WriteLine((((maxPeak.MZ - minPeak.MZ) / (maxPeak.Index - minPeak.Index)) * currentCluster.Z));
-            //}
-
-            //ClusterPeak previousPeak = null; 
-
-            //foreach (var clusterPeak in currentCluster.Peaks.Where(p => p.IsCorePeak))
-            //{
-            //    if (previousPeak != null)
-            //    {
-            //        Debug.WriteLine("Proton Calc from Individual Peak space: " + ((clusterPeak.MZ - previousPeak.MZ) * currentCluster.Z));
-            //    }
-            //    else
-            //    {
-            //        previousPeak = clusterPeak;       
-            //    }
-            //}
-
-
-
-            // Apply filters for repeats
-
-            // Apply filters for too many missing peaks
-
-            // Apply filters for noise...
-
-
-
-
-            // Validate Charge state
-
-
-
-
-
-            // Require that at least 70% of the expected peaks are present!  
-            //if (((peakCount-1) * 0.7) < ((lastPeak - firstPeak) / zSpace)) continue;
-
-            //if the 2 most intense peaks are missing immeidately adjacent peaks, reject the distribution!  
-            // This is not a good way of eliminating incorrectly included distributions
-            //var biggestpeak = distribution.Where(x => x.Value == distribution.Max(p => p.Value));
-
-            //var neighbors = from peak in distribution
-            //                where ((peak.Key < ((aPeak - zSpace) + LooseTolerance)) && (peak.Key > ((aPeak - zSpace) - LooseTolerance))) || ((peak.Key < ((aPeak + zSpace) + LooseTolerance)) && (peak.Key > ((aPeak + zSpace) - LooseTolerance)))
-            //                select peak;
-
-            // var accept = neighbors.Count() == 2 && Math.Abs((Math.Abs(neighbors.First().Key - neighbors.Skip(1).First().Key) - (2 * zSpace))) < LooseTolerance ;
-
-
-            //var test = new SortedSet<double>(distribution);
-
-            //var median = distribution.Median();
-
-
-            //foreach (var peakInD in distribution)
-            //{
-            //    if (((peakInD - median) % zSpace) < LooseTolerance)
-            //        Debug.WriteLine("Include");
-            //    else
-            //        Debug.WriteLine("Exclude");
-
-            //}
-
-            // var averageSpacing = from x in test
-            //                      select ()
-
-            // Then, find most intense peak of distribution and go back to raw peaks and get all the peaks in the distribution.  
-            // If there are holes, remove the distribution, otherwise, add to the output list...
-            // Find Max and Min spacing of peaks and avg spacing, then go back to original data to look for missing peaks...
-
-
-            // Move peaks from result to new List...
-
-            //TODO: use cross correlation fit on the distribution to assess quality and set the Cluster.Score property
-
-            //clusters.Add(new Cluster() { Peaks = new SortedList<double,float>(distribution.ToDictionary(k => k.Key, v => v.Value)), Z = charge });
-        
+                                
           }
         
         return clusters;
     }
-
-
-    ///// <summary>
-    ///// Remove peaks that are not part of a group and remove peaks with groups that are missing major peaks
-    ///// </summary>
-    ///// <param name="result"></param>
-    ///// <param name="zSpace"></param>
-    ///// <returns></returns>
-    //private Science.Chemistry.SortedSet<double> FindIsotopeGroups(Science.Chemistry.SortedSet<double> input, double zSpace)
-    //{
-    //    double LooseTolerance = 0.0017;
-
-    //    var result = new Science.Chemistry.SortedSet<double>();
-
-    //    foreach (var aPeak in result)
-    //    {
-    //        //TODO: use cross-correlation here to find peaks of the distribution?
-
-    //        var distribution = from peak in input
-    //                           where (peak > (aPeak - (zSpace * 2))) && (peak < (aPeak + (zSpace * 25))) && (((peak - aPeak) % zSpace) < LooseTolerance)
-    //                           select peak;
-
-    //        //var test = new SortedSet<double>(distribution);
-
-    //        var median = distribution.Median();
-
-
-    //        foreach (var peakInD in distribution)
-    //        {
-    //            if (((peakInD - median) % zSpace) < LooseTolerance)
-    //                Debug.WriteLine("Include");
-    //            else
-    //                Debug.WriteLine("Exclude");
-
-    //        }
-
-    //       // var averageSpacing = from x in test
-    //       //                      select ()
-
-    //        // Then, find most intense peak of distribution and go back to raw peaks and get all the peaks in the distribution.  
-    //        // If there are holes, remove the distribution, otherwise, add to the output list...
-    //        // Find Max and Min spacing of peaks and avg spacing, then go back to original data to look for missing peaks...
-
-
-    //        // Move peaks from result to new List...
-    //    }
-
-    //    return null;
-
-    //}
+  
 
     public List<Cluster> ParallelDetectChargeStates(int MinCharge, int MaxCharge, double massTolerance)
     {
@@ -760,37 +445,6 @@ public class ChargeDetector
 
         //TODO: Filter out charge states that are a factor of another...
     }
-
-    //        public void ParallelDetectChargeStates(int MinCharge, int MaxCharge)
-    //        {
-    //            // Can be Parallel!!!
-
-    //            Parallel.ForEach((Enumerable.Range(MinCharge, (MaxCharge - MinCharge)).Reverse()), chargeState =>
-    //            {
-    //                var result = DetectCharge(chargeState);
-
-    //                //TODO: filter out peaks that don't have others from the isotope distributionj
-    //                //TODO: filter out distributions that have gaps (or missing peaks) -- open up tolerance a bit to be sure though...
-
-    ////                double zSpace = 1 / (double)chargeState;
-
-    ////                result.RemoveWhere(t => result.Where(x => ((x < (t + (3.2 * zSpace))) && (x > (t - (3.2 * zSpace))))).Count() < 3);
-
-
-    //                double zSpace = 1 / (double)chargeState;
-    //                //result = FindIsotopeGroups(result, zSpace);
-
-    //                // Remove peaks with insufficient supporting peak data (i.e. at least 3 peaks where there should be 6)
-    //                result.RemoveWhere(t => result.Where(x => ((x < (t + (3.2 * zSpace))) && (x > (t - (3.2 * zSpace))))).Count() < 4);
-
-
-    //                //foreach (var aPeak in result)
-    //                //    Debug.WriteLine("Found a peak (Z=" + chargeState + "): " + aPeak);            
-    //            });
-
-    //            //TODO: Filter out charge states that are a factor of another...
-
-    //        }
 
     public List<double> DetectCharge(int state, double massTolerance, double massRangeMin = 0, double massRangeMax = double.MaxValue)
     {
@@ -842,69 +496,10 @@ public class ChargeDetector
                     ChargeDetected.Add(aroundMZ);
                 }
             }
-
-            //if ((mzList[mz] > (mzList[aroundMZ] * hdt)) && (Math.Abs((aroundMZ + chargeSpace) - mz) < Tolerance))
-            //{
-            //    double mz2 = mzList.FindClosest(aroundMZ - chargeSpace);
-            //    if ((mzList[mz2] > (mzList[aroundMZ] * hdt)) && (Math.Abs((aroundMZ - chargeSpace) - mz2) < Tolerance)) ChargeDetected.Add(aroundMZ);
-            //}
-
-            // Check Intensity tolerance and m/z tolerance
-            //                                        if ((mzList[mz] > (mzList[aroundMZ] * 0.3)) && (Math.Abs((aroundMZ + chargeSpace) - mz) < tolerance) && (mzList[mz2] > (mzList[aroundMZ] * 0.3)) && (Math.Abs((aroundMZ - chargeSpace) - mz2) < tolerance))
-
-            // ChargeDetected.Add(aroundMZ)
-
-            //return null;                    
-
-
-
-            //intensityList.Keys[i], intensityList.Values[i]);
-
-            //var mz = ;
-            //var a = LabelCharge(intensityList[intensityList.Keys[i]], chargeSpace);
-
-            //if (a.HasValue) ChargeDetected.Add(a.Value);
-
-            //intensityList.Keys[i]
-
-            //mzList[
-
-        }
-
+         }
         //Debug.WriteLine("*** " + ChargeDetected.Count.ToString() + " ion spaces detected for charge " + state.ToString());
-
         return ChargeDetected;
-
     }
-
-    //private double? LabelCharge(double aroundMZ, double chargeSpace)
-    //{
-    //    return LabelCharge(aroundMZ, chargeSpace, Tolerance);
-    //}
-
-    //private double? LabelCharge(double aroundMZ, double chargeSpace, double tolerance)
-    //{
-    //    double mz;
-    //    double mz2;
-
-    //    mz = mzList.FindClosest(aroundMZ + chargeSpace);
-    //    mz2 = mzList.FindClosest(aroundMZ - chargeSpace);
-    //    Check Intensity tolerance and m / z tolerance
-    //    if ((mzList[mz] > (mzList[aroundMZ] * 0.3)) && (Math.Abs((aroundMZ + chargeSpace) - mz) < tolerance) && (mzList[mz2] > (mzList[aroundMZ] * 0.3)) && (Math.Abs((aroundMZ - chargeSpace) - mz2) < tolerance))
-    //        return aroundMZ;
-
-    //    return null;
-    //}
-
-    //    private void button3_Click()
-    //    {
-    //        var start = DateTime.Now;
-
-    //        ParallelDetectChargeStates(4, 40, 5);
-
-    //        Debug.Print("Elapsed ms: " + DateTime.Now.Subtract(start).TotalMilliseconds);
-    //    }
-
 }
 
 
@@ -1052,9 +647,6 @@ public static partial class Extensions
             return (tolerance < 0 || (Math.Abs(list.Keys[left] - target) < tolerance)) ? left : -1;
     }
 
-    
-
-
     private static double GetSigma()
     {
         return GetSigma(30000);
@@ -1109,9 +701,6 @@ public static partial class Extensions
 
         return maxIndex;
     }
-
-
-
 
     public class point
     {
