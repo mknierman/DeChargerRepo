@@ -7,12 +7,12 @@
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{105610F7-71F5-4AE3-9D0F-D4939624644D}
 AppName=deCharger
-AppVersion=1.0.1
-;AppVerName=deCharger 1.0.1
-AppPublisher=e-MSion, Inc.
-AppPublisherURL=http://www.e-msion.com/
-AppSupportURL=http://www.e-msion.com/
-AppUpdatesURL=http://www.e-msion.com/
+AppVersion=5.0.0.567
+AppVerName=deCharger 5.0.0.567
+AppSupportURL=https://github.com/mknierman/DeChargerRepo/
+LicenseFile=C:\sw\decharger_dev\deCharger\DeCharger\LICENSE.txt
+AppCopyright=Copyright © 2022 Mike Knierman
+InfoBeforeFile=C:\sw\decharger_dev\decharger\LICENSE.txt
 DefaultDirName={pf}\deCharger
 DefaultGroupName=deCharger
 OutputBaseFilename=decharger_setup
