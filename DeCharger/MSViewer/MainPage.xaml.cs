@@ -509,10 +509,12 @@ namespace MSViewer
                 //string execPath = AppDomain.CurrentDomain.BaseDirectory;
 
                 //var pubVer = string.Format("Product Name: {4}, Version: {0}.{1}.{2}.{3}", System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion.Major, System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion.Minor, System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion.Build, System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion.Revision, Assembly.GetEntryAssembly().GetName().Name);
-                string pubVer; 
+                string pubVer;
+                Version ver;
                 try
                 {
-                    pubVer = string.Format("Product Name: {4}, Version: {0}.{1}.{2}.{3}", System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion.Major, System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion.Minor, System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion.Build, System.Deployment.Application.ApplicationDeployment.CurrentDeployment.CurrentVersion.Revision, Assembly.GetEntryAssembly().GetName().Name);
+                    ver = Assembly.GetExecutingAssembly().GetName().Version;
+                    pubVer = string.Format("Version: {0}.{1}.{2}.{3}", ver.Major, ver.Minor, ver.Build, ver.Revision, Assembly.GetEntryAssembly().GetName().Name);
                 }
                 catch (Exception ex)
                 {
@@ -520,7 +522,7 @@ namespace MSViewer
                 }
 
 
-                lblVersionAuthors.Content = "Version: " + pubVer;
+                lblVersionAuthors.Content =  pubVer;
                 App.AssemblyLocation = FindCurrentAssemblyPath.GetAssemblyPath();
                 Items = new ObservableCollection<QuantitationItem>();
                 QuantitationListView.ItemsSource = Items;
