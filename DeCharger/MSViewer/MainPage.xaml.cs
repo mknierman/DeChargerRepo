@@ -681,10 +681,10 @@ namespace MSViewer
             tbMonoMassList.Visibility = System.Windows.Visibility.Visible;
             tbMergeSpectra.Visibility = System.Windows.Visibility.Visible;
             //MDK hide autoscan till it is fixed
-            tbAutoScan.Visibility = System.Windows.Visibility.Hidden;
+            tbAutoScan.Visibility = System.Windows.Visibility.Visible;
             tbValidate.Visibility = System.Windows.Visibility.Visible;
             //hide confirmed sequenmces tab until autoscan is fixed
-            tbConfirmedSequenceTab.Visibility = System.Windows.Visibility.Hidden;
+            tbConfirmedSequenceTab.Visibility = System.Windows.Visibility.Visible;
 
             btnDetectParents.IsEnabled = true;
             Thickness dtgrdsearchmargin = dtgrdSearchSequence.Margin;
@@ -6704,7 +6704,9 @@ namespace MSViewer
                     this.label4.Content = "Decharged MS Viewer" + " - Oligo";
                 }
                 //MDK clear any load cache
-                SignalProcessing.Cluster.ClearAveCache();
+
+                
+                // SignalProcessing.Cluster.ClearAveCache();
 
             }
         }

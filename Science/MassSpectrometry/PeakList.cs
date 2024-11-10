@@ -1060,7 +1060,10 @@ namespace SignalProcessing
 
         public static void ClearAveCache()
         {
-            if (AveragineCache.Count >1 )
+            if (AveragineCache==null) {
+                AveragineCache = new Dictionary<int, double[]>();
+            }
+            if (AveragineCache.Count >1) 
             {
                 AveragineCache =  null;
             }
